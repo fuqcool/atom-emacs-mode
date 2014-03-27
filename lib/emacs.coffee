@@ -13,6 +13,7 @@ module.exports =
       editorView.command 'emacs:kill-region', => @killRegion(editorView)
       editorView.command 'emacs:kill-ring-save', => @killRingSave(editorView)
       editorView.command 'emacs:open-line', => @openLine(editorView)
+      editorView.on 'core:cancel', => @clearSelection(editorView)
 
   deactivate: ->
 
@@ -33,7 +34,7 @@ module.exports =
 
   killRingSave: (editorView) ->
     @killRing.killRingSave(editorView)
-    @_clearSelection(editorView)
+    @clearSelection(editorView)
 
   openLine: (editorView) ->
     editor = editorView.getEditor()
@@ -41,8 +42,6 @@ module.exports =
     editor.insertNewline()
     editor.setCursorBufferPosition(pos)
 
-  _clearSelection: (editorView) ->
+  clearSelection: (editorView) ->
     editor = editorView.getEditor()
-    selections = editor.getSelections()
-    selections.forEach (sel) ->
-      sel.clear()
+    sel.clear() for sel in editor.getSelections()
