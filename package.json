@@ -1,0 +1,15 @@
+{
+  "name": "Emacs",
+  "main": "./lib/emacs",
+  "version": "0.0.1",
+  "description": "Enjoy your familiar Emacs features on a modern editor.",
+  "activationEvents": ["emacs:toggle"],
+  "repository": "https://github.com/atom/emacs",
+  "license": "MIT",
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "dependencies": {
+    "underscore-plus": "latest"
+  }
+}
