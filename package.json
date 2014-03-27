@@ -1,14 +1,15 @@
 {
   "name": "Emacs",
   "main": "./lib/emacs",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Enjoy your familiar Emacs features on a modern editor.",
-  "activationEvents": ["emacs:toggle"],
+  "activationEvents": [
+    "emacs:toggle"
+  ],
   "repository": "https://github.com/fuqcool/atomic-emacs-mode.git",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
