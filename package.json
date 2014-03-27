@@ -1,5 +1,5 @@
 {
-  "name": "Emacs",
+  "name": "emacs",
   "main": "./lib/emacs",
   "version": "0.0.0",
   "description": "Enjoy your familiar Emacs features on a modern editor.",
