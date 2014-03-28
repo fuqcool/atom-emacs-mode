@@ -17,6 +17,7 @@ atom.packages.enablePackage('emacs').activateNow()
 - Kill ring
 - Buffer finder (C-x b)
 - Copy text by mouse selection
+- Zen mode(hide tabs, sidebar)
 
 ## Keymap
 
@@ -65,4 +66,5 @@ atom.packages.enablePackage('emacs').activateNow()
 'emacs':
   # hide editor tabs
   'hideTabs': false
+  'hideSidebar': false
 ```

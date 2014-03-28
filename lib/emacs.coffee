@@ -2,12 +2,15 @@
 BufferListView = require './buffer-list-view'
 KillRing = require './kill-ring'
 
-
 module.exports =
   killRing: new KillRing()
 
   activate: (state) ->
-    @hideTabs() if atom.config.get 'emacs.hideTabs'
+    atom.config.observe 'emacs.hideTabs', =>
+      @hideTabs(atom.config.get 'emacs.hideTabs')
+
+    atom.config.observe 'emacs.hideSidebar', =>
+      @hideSidebar(atom.config.get 'emacs.hideSidebar')
 
     atom.workspaceView.eachEditorView (editorView) =>
       editorView.command 'emacs:switch-buffer', => @switchBuffer(editorView)
@@ -84,5 +87,9 @@ module.exports =
         break if before.isEqual pos
         break if @_getChar(editor, pos.row, pos.column).match(/[0-9a-zA-Z]/)
 
-  hideTabs: ->
-    pane.find('.tab-bar').hide() for pane in atom.workspaceView.getPanes()
+  hideTabs: (isHide) ->
+    (if isHide then pane.find('.tab-bar').hide() else pane.find('.tab-bar').show()) for pane in atom.workspaceView.getPanes()
+
+  hideSidebar: (isHide) ->
+    panel = atom.workspaceView.parent().find('.tool-panel')
+    if isHide then panel.hide() else panel.show()
