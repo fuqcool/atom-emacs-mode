@@ -16,6 +16,7 @@ atom.packages.enablePackage('emacs').activateNow()
 - Regular Emacs key binding(see below)
 - Kill ring
 - Buffer finder (C-x b)
+- Copy text by mouse selection
 
 ## Keymap
 

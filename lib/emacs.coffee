@@ -14,6 +14,7 @@ module.exports =
       editorView.command 'emacs:kill-ring-save', => @killRingSave(editorView)
       editorView.command 'emacs:open-line', => @openLine(editorView)
       editorView.on 'core:cancel', => @clearSelection(editorView)
+      editorView.on 'mouseup', => @selectByMouse(editorView)
 
   deactivate: ->
 
@@ -45,3 +46,6 @@ module.exports =
   clearSelection: (editorView) ->
     editor = editorView.getEditor()
     sel.clear() for sel in editor.getSelections()
+
+  selectByMouse: (editorView) ->
+    @killRing.killRingSave(editorView)
