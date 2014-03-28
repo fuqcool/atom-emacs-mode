@@ -59,3 +59,10 @@ atom.packages.enablePackage('emacs').activateNow()
   'ctrl-x b': 'emacs:switch-buffer'
   'ctrl-x ctrl-f': 'fuzzy-finder:toggle-file-finder'
 ```
+
+## Configuration
+```
+'emacs':
+  # hide editor tabs
+  'hideTabs': false
+```

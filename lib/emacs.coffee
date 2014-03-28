@@ -7,6 +7,8 @@ module.exports =
   killRing: new KillRing()
 
   activate: (state) ->
+    @hideTabs() if atom.config.get 'emacs.hideTabs'
+
     atom.workspaceView.eachEditorView (editorView) =>
       editorView.command 'emacs:switch-buffer', => @switchBuffer(editorView)
       editorView.command 'emacs:yank', => @yank(editorView)
@@ -81,3 +83,6 @@ module.exports =
 
         break if before.isEqual pos
         break if @_getChar(editor, pos.row, pos.column).match(/[0-9a-zA-Z]/)
+
+  hideTabs: ->
+    pane.find('.tab-bar').hide() for pane in atom.workspaceView.getPanes()
