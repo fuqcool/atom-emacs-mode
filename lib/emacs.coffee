@@ -1,5 +1,7 @@
+{Range, Point} = require 'atom'
 BufferListView = require './buffer-list-view'
 KillRing = require './kill-ring'
+
 
 module.exports =
   killRing: new KillRing()
@@ -13,6 +15,8 @@ module.exports =
       editorView.command 'emacs:kill-region', => @killRegion(editorView)
       editorView.command 'emacs:kill-ring-save', => @killRingSave(editorView)
       editorView.command 'emacs:open-line', => @openLine(editorView)
+      editorView.command 'emacs:forward-word', => @forwardWord(editorView)
+      editorView.command 'emacs:backward-word', => @backwardWord(editorView)
       editorView.on 'core:cancel', => @clearSelection(editorView)
       editorView.on 'mouseup', => @selectByMouse(editorView)
 
@@ -49,3 +53,31 @@ module.exports =
 
   selectByMouse: (editorView) ->
     @killRing.killRingSave(editorView)
+
+  _getChar: (editor, row, col) ->
+    editor.getTextInBufferRange(
+      new Range(new Point(row, col), new Point(row, col + 1)))
+
+  forwardWord: (editorView) ->
+    editor = editorView.getEditor()
+    cursors = editor.getCursors()
+    for cursor in cursors
+      while (true)
+        before = cursor.getBufferPosition()
+        cursor.moveToEndOfWord()
+        pos = cursor.getBufferPosition()
+
+        break if before.isEqual pos
+        break if @_getChar(editor, pos.row, pos.column - 1).match(/[0-9a-zA-Z]/)
+
+  backwardWord: (editorView) ->
+    editor = editorView.getEditor()
+    cursors = editor.getCursors()
+    for cursor in cursors
+      while (true)
+        before = cursor.getBufferPosition()
+        cursor.moveToBeginningOfWord()
+        pos = cursor.getBufferPosition()
+
+        break if before.isEqual pos
+        break if @_getChar(editor, pos.row, pos.column).match(/[0-9a-zA-Z]/)
