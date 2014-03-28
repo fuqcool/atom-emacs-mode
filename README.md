@@ -30,6 +30,7 @@ atom.packages.enablePackage('emacs').activateNow()
   'ctrl-o': 'emacs:open-line'
   'alt-f': 'emacs:forward-word'
   'alt-b': 'emacs:backward-word'
+  'ctrl-l': 'emacs:recenter'
 
 '.workspace':
   # cursor

@@ -22,6 +22,7 @@ module.exports =
       editorView.command 'emacs:open-line', => @openLine(editorView)
       editorView.command 'emacs:forward-word', => @forwardWord(editorView)
       editorView.command 'emacs:backward-word', => @backwardWord(editorView)
+      editorView.command 'emacs:recenter', => @recenter(editorView)
       editorView.on 'core:cancel', => @clearSelection(editorView)
       editorView.on 'mouseup', => @selectByMouse(editorView)
 
@@ -93,3 +94,12 @@ module.exports =
   hideSidebar: (isHide) ->
     panel = atom.workspaceView.parent().find('.tool-panel')
     if isHide then panel.hide() else panel.show()
+
+  recenter: (editorView) ->
+    editor = editorView.getEditor()
+    pos = editor.getCursorScreenPosition()
+
+    # the editor doesn't scroll when target row is visible, WTF!
+    editorView.scrollToTop()
+
+    editorView.scrollToScreenPosition(pos, center: true)
