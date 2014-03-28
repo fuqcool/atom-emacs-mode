@@ -27,6 +27,8 @@ atom.packages.enablePackage('emacs').activateNow()
   'ctrl-backspace': 'editor:backspace-to-beginning-of-word'
   'ctrl-j': 'editor:newline'
   'ctrl-o': 'emacs:open-line'
+  'alt-f': 'emacs:forward-word'
+  'alt-b': 'emacs:backward-word'
 
 '.workspace':
   # cursor
