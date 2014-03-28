@@ -96,10 +96,11 @@ module.exports =
     if isHide then panel.hide() else panel.show()
 
   recenter: (editorView) ->
-    editor = editorView.getEditor()
-    pos = editor.getCursorScreenPosition()
+    cursorPos = editorView.getEditor().getCursorScreenPosition()
+    rows = editorView.getPageRows()
 
-    # the editor doesn't scroll when target row is visible, WTF!
-    editorView.scrollToTop()
+    topRow = cursorPos.row - parseInt(rows / 2)
+    topPos = editorView.getEditor().clipScreenPosition [topRow, 0]
 
-    editorView.scrollToScreenPosition(pos, center: true)
+    pix = editorView.pixelPositionForScreenPosition topPos
+    editorView.scrollTop(pix.top)
