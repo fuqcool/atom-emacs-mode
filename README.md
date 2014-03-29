@@ -15,7 +15,7 @@ atom.packages.enablePackage('emacs').activateNow()
 
 - Regular Emacs key binding(see below)
 - Kill ring
-- Buffer finder (C-x b)
+- Buffer finder (C-x b), file finder(C-x C-b)
 - Copy text by mouse selection
 - Zen mode(hide tabs, sidebar)
 

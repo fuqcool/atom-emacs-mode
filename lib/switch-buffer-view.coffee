@@ -1,7 +1,7 @@
 {SelectListView} = require 'atom'
 
 module.exports =
-  class BufferListView extends SelectListView
+  class SwitchBufferView extends SelectListView
     initialize: ->
       super
       @addClass('overlay from-top')

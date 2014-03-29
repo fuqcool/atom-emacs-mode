@@ -1,6 +1,8 @@
 {Range, Point} = require 'atom'
-BufferListView = require './buffer-list-view'
+SwitchBufferView = require './switch-buffer-view'
+FindFileView = require './find-file-view.coffee'
 KillRing = require './kill-ring'
+
 
 module.exports =
   killRing: new KillRing()
@@ -12,8 +14,11 @@ module.exports =
     atom.config.observe 'emacs.hideSidebar', =>
       @hideSidebar(atom.config.get 'emacs.hideSidebar')
 
+    atom.workspaceView.command 'emacs:find-file', => @findFile()
+
     atom.workspaceView.eachEditorView (editorView) =>
       editorView.command 'emacs:switch-buffer', => @switchBuffer(editorView)
+
       editorView.command 'emacs:yank', => @yank(editorView)
       editorView.on 'cursor:moved', => @killRing.cancelYank()
       editorView.command 'emacs:yank-pop', => @yankPop(editorView)
@@ -31,7 +36,10 @@ module.exports =
   serialize: ->
 
   switchBuffer: ->
-    new BufferListView()
+    new SwitchBufferView()
+
+  findFile: ->
+    new FindFileView()
 
   yank: (editorView) ->
     @killRing.yank(editorView)
