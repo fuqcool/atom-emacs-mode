@@ -10,9 +10,10 @@ module.exports =
 
       editor = atom.workspace.getActiveEditor()
       if editor
-        @pwd = path.dirname editor.getUri()
-      else
-        @pwd = process.env.HOME
+        uri = path.dirname editor.getUri()
+        @pwd = uri if uri? and uri isnt '.'
+
+      @pwd ?= process.env.HOME
 
       @subscribe @filterEditorView.getEditor().getBuffer(), 'changed', =>
         @setItems @renderItems()
