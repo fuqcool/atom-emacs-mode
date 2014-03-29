@@ -19,18 +19,20 @@ module.exports =
         @setItems @renderItems()
         @populateList()
 
+
       @filterEditorView.setText(@pwd)
       atom.workspaceView.appendToBottom(this)
       @focusFilterEditor()
 
     viewForItem: (item) ->
       """
-      <li>#{item.uri}</li>
+      <li>#{item.name}</li>
       """
 
     listDir: (dir) ->
       try
-        (path.join dir, f for f in fs.readdirSync dir)
+        files = (path.join dir, f for f in fs.readdirSync dir)
+        (uri: f, name: f for f in files)
       catch
         []
 
@@ -46,16 +48,18 @@ module.exports =
         if stats.isDirectory()
           files = files.concat @listDir(dir)
       catch
+        files.push(uri: dir, name: "Create #{dir}")
       finally
         parent = path.dirname(dir)
         files = files.concat @listDir(parent)
 
-      (uri: f for f in files)
+      files
 
     getFilterKey: -> 'uri'
 
     confirmed: (item) ->
       fs.stat item.uri, (err, stats) =>
-        atom.workspace.open(item.uri) if stats.isFile()
-        if stats.isDirectory()
+        if err? or stats.isFile()
+          atom.workspace.open(item.uri)
+        else if stats.isDirectory()
           @filterEditorView.setText(item.uri)
