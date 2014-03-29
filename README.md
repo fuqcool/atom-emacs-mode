@@ -59,7 +59,7 @@ atom.packages.enablePackage('emacs').activateNow()
   'ctrl-x ctrl-c': 'window:close'
   'ctrl-x k': 'core:close'
   'ctrl-x b': 'emacs:switch-buffer'
-  'ctrl-x ctrl-f': 'fuzzy-finder:toggle-file-finder'
+  'ctrl-x ctrl-f': 'emacs:find-file'
 ```
 
 ## Configuration
