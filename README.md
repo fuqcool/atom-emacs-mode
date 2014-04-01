@@ -18,6 +18,8 @@ atom.packages.enablePackage('emacs').activateNow()
 - Buffer finder (C-x b), file finder(C-x C-f)
 - Copy text by mouse selection
 - Zen mode(hide tabs, sidebar)
+- Marker
+- Emacs-style cursor
 
 ## Keymap
 
@@ -31,6 +33,7 @@ atom.packages.enablePackage('emacs').activateNow()
   'alt-f': 'emacs:forward-word'
   'alt-b': 'emacs:backward-word'
   'ctrl-l': 'emacs:recenter'
+  'ctrl-space': 'emacs:set-mark'
 
 '.workspace':
   # cursor
