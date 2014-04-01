@@ -2,6 +2,7 @@
 SwitchBufferView = require './switch-buffer-view'
 FindFileView = require './find-file-view.coffee'
 KillRing = require './kill-ring'
+EmacsMark = require './mark'
 
 
 module.exports =
@@ -17,8 +18,9 @@ module.exports =
     atom.workspaceView.command 'emacs:find-file', => @findFile()
 
     atom.workspaceView.eachEditorView (editorView) =>
-      editorView.command 'emacs:switch-buffer', => @switchBuffer(editorView)
+      new EmacsMark(editorView)
 
+      editorView.command 'emacs:switch-buffer', => @switchBuffer()
       editorView.command 'emacs:yank', => @yank(editorView)
       editorView.on 'cursor:moved', => @killRing.cancelYank()
       editorView.command 'emacs:yank-pop', => @yankPop(editorView)
@@ -28,8 +30,11 @@ module.exports =
       editorView.command 'emacs:forward-word', => @forwardWord(editorView)
       editorView.command 'emacs:backward-word', => @backwardWord(editorView)
       editorView.command 'emacs:recenter', => @recenter(editorView)
-      editorView.on 'core:cancel', => @clearSelection(editorView)
+      editorView.command 'emacs:clear-selection', => @clearSelection(editorView)
+
+      editorView.on 'core:cancel', => editorView.trigger('emacs:clear-selection')
       editorView.on 'mouseup', => @selectByMouse(editorView)
+
 
   deactivate: ->
 
@@ -54,6 +59,7 @@ module.exports =
   killRingSave: (editorView) ->
     @killRing.killRingSave(editorView)
     @clearSelection(editorView)
+    editorView.trigger 'emacs:clear-mark'
 
   openLine: (editorView) ->
     editor = editorView.getEditor()
