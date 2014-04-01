@@ -7,7 +7,7 @@
   {
     'label': 'Packages'
     'submenu': [
-      'label': 'emacs'
+      'label': 'Emacs'
       'submenu': [
         { 'label': 'Toggle', 'command': 'emacs:toggle' }
       ]
