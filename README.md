@@ -66,9 +66,12 @@ atom.packages.enablePackage('emacs').activateNow()
 ```
 
 ## Configuration
+Below are the default configurations:
+
 ```
 'emacs':
   # hide editor tabs
   'hideTabs': false
   'hideSidebar': false
+  'useEmacsCursor': true
 ```

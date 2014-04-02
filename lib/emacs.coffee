@@ -9,13 +9,12 @@ module.exports =
   killRing: new KillRing()
 
   activate: (state) ->
-    atom.config.observe 'emacs.hideTabs', =>
-      @hideTabs(atom.config.get 'emacs.hideTabs')
-
-    atom.config.observe 'emacs.hideSidebar', =>
-      @hideSidebar(atom.config.get 'emacs.hideSidebar')
-
     atom.workspaceView.command 'emacs:find-file', => @findFile()
+    atom.workspaceView.command 'emacs:hide-tabs', (event, value) => @hideTabs(value)
+    atom.workspaceView.command 'emacs:hide-sidebar', (event, value) => @hideSidebar(value)
+    atom.workspaceView.command 'emacs:use-emacs-cursor', (event, value) => @useEmacsCursor(value)
+
+    require './config'
 
     atom.workspaceView.eachEditorView (editorView) =>
       new EmacsMark(editorView)
@@ -108,6 +107,13 @@ module.exports =
   hideSidebar: (isHide) ->
     panel = atom.workspaceView.parent().find('.tool-panel')
     if isHide then panel.hide() else panel.show()
+
+  useEmacsCursor: (useEmacs) ->
+    atom.workspaceView.eachEditorView (editorView) ->
+      if useEmacs
+        editorView.addClass 'emacs-cursor'
+      else
+        editorView.removeClass 'emacs-cursor'
 
   recenter: (editorView) ->
     cursorPos = editorView.getEditor().getCursorScreenPosition()
