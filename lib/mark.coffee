@@ -30,6 +30,7 @@ module.exports =
       if @marking
         @marking = false
         @editorView.removeClass(MARKING)
+        @editorView.trigger('emacs:clear-selection')
 
     extendSelection: ->
       return if not @marking
