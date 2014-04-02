@@ -8,6 +8,8 @@
   'alt-b': 'emacs:backward-word'
   'ctrl-l': 'emacs:recenter'
   'alt-/': 'autocomplete:toggle'
+  'ctrl-s': 'find-and-replace:show'
+  'ctrl-@': 'emacs:set-mark'
 
 '.editor.emacs-marking':
   'right':'core:select-right'
@@ -21,6 +23,7 @@
 
 'div.editor':
   'ctrl-space': 'emacs:set-mark'
+
 
 '.workspace':
   # cursor
