@@ -14,11 +14,11 @@ module.exports =
         @pwd = uri if uri? and uri isnt '.'
 
       @pwd ?= process.env.HOME
+      @pwd = @appendSlash @pwd
 
       @subscribe @filterEditorView.getEditor().getBuffer(), 'changed', =>
         @setItems @renderItems()
         @populateList()
-
 
       @filterEditorView.setText(@pwd)
       atom.workspaceView.appendToBottom(this)
@@ -63,3 +63,9 @@ module.exports =
           atom.workspace.open(item.uri)
         else if stats.isDirectory()
           @filterEditorView.setText(item.uri)
+
+    appendSlash: (f) ->
+      if f and f[f.length - 1] isnt '/'
+        return f + '/'
+      else
+        return f
