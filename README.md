@@ -5,7 +5,7 @@ This is an Emacs extension for Atom.
 
 ## Install
 
-You can install it from `Atom-Preferences-Packages`. To enable emacs-mode automatically on Atom starts, put following code to your init script:
+You can install it from `Atom -> Preferences -> Settings -> Packages`. To enable emacs-mode automatically on Atom starts, put following code to your init script:
 
 ```
 atom.packages.enablePackage('emacs').activateNow()
@@ -34,6 +34,7 @@ atom.packages.enablePackage('emacs').activateNow()
   'alt-b': 'emacs:backward-word'
   'ctrl-l': 'emacs:recenter'
   'ctrl-space': 'emacs:set-mark'
+  'ctrl-@': 'emacs: set-mark'
 
 '.workspace':
   # cursor
@@ -70,8 +71,7 @@ Below are the default configurations:
 
 ```
 'emacs':
-  # hide editor tabs
-  'hideTabs': false
-  'hideSidebar': false
-  'useEmacsCursor': true
+  'hideTabs': false           # hide tabs
+  'hideSidebar': false        # hide tree view 
+  'useEmacsCursor': true      # use emacs style(fat) cursor
 ```
