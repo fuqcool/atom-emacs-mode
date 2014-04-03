@@ -47,6 +47,7 @@ module.exports =
 
         if stats.isDirectory()
           files = files.concat @listDir(dir)
+          files.unshift(name: "Open #{dir} in new window", uri: dir, open: true)
       catch
         files.push(uri: dir, name: "Create #{dir}")
       finally
@@ -62,7 +63,10 @@ module.exports =
         if err? or stats.isFile()
           atom.workspace.open(item.uri)
         else if stats.isDirectory()
-          @filterEditorView.setText(item.uri)
+          if item.open? and item.open
+            atom.open(pathsToOpen: [item.uri])
+          else
+            @filterEditorView.setText(item.uri)
 
     appendSlash: (f) ->
       if f and f[f.length - 1] isnt '/'
