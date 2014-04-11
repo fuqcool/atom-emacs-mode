@@ -66,7 +66,7 @@ module.exports =
           if item.open? and item.open
             atom.open(pathsToOpen: [item.uri])
           else
-            @filterEditorView.setText(item.uri)
+            @filterEditorView.setText(@appendSlash item.uri)
 
     appendSlash: (f) ->
       if f and f[f.length - 1] isnt '/'
