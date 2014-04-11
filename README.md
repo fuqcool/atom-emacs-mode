@@ -1,4 +1,4 @@
-Atomic Emacs-mode
+Atomic emacs-mode
 ======
 
 This is an Emacs extension for Atom.
