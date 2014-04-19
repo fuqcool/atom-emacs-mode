@@ -6,7 +6,7 @@
   "activationEvents": [
     "emacs:toggle"
   ],
-  "repository": "https://github.com/fuqcool/atom-emacs-mode.git",
+  "repository": "https://github.com/fuqcool/atomic-emacs-mode.git",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"
