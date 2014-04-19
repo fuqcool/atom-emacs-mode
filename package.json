@@ -1,7 +1,7 @@
 {
   "name": "emacs",
   "main": "./lib/emacs",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "Enjoy a mouse-free Emacs experience on a modern editor.",
   "activationEvents": [
     "emacs:toggle"
