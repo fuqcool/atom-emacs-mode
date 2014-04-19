@@ -10,6 +10,7 @@
   'alt-/': 'autocomplete:toggle'
   'ctrl-s': 'find-and-replace:show'
   'ctrl-@': 'emacs:set-mark'
+  'alt-;': 'editor:toggle-line-comments'
 
 '.editor.emacs-marking':
   'right':'core:select-right'
