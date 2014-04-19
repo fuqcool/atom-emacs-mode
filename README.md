@@ -35,6 +35,7 @@ atom.packages.enablePackage('emacs').activateNow()
   'ctrl-l': 'emacs:recenter'
   'ctrl-space': 'emacs:set-mark'
   'ctrl-@': 'emacs: set-mark'
+  'alt-;': 'editor:toggle-line-comments'
 
 '.workspace':
   # cursor
