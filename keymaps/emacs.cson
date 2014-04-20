@@ -11,6 +11,7 @@
   'ctrl-s': 'find-and-replace:show'
   'ctrl-@': 'emacs:set-mark'
   'alt-;': 'editor:toggle-line-comments'
+  'alt-g g': 'go-to-line:toggle'
 
 '.editor.emacs-marking':
   'right':'core:select-right'

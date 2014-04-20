@@ -33,9 +33,24 @@ atom.packages.enablePackage('emacs-mode').activateNow()
   'alt-f': 'emacs:forward-word'
   'alt-b': 'emacs:backward-word'
   'ctrl-l': 'emacs:recenter'
-  'ctrl-space': 'emacs:set-mark'
-  'ctrl-@': 'emacs: set-mark'
+  'alt-/': 'autocomplete:toggle'
+  'ctrl-s': 'find-and-replace:show'
+  'ctrl-@': 'emacs:set-mark'
   'alt-;': 'editor:toggle-line-comments'
+  'alt-g g': 'go-to-line:toggle'
+
+'.editor.emacs-marking':
+  'right':'core:select-right'
+  'ctrl-f':'core:select-right'
+  'left':'core:select-left'
+  'ctrl-b':'core:select-left'
+  'up':'core:select-up'
+  'ctrl-p':'core:select-up'
+  'down':'core:select-down'
+  'ctrl-n':'core:select-down'
+
+'div.editor':
+  'ctrl-space': 'emacs:set-mark'
 
 '.workspace':
   # cursor
@@ -73,6 +88,6 @@ Below are the default configurations:
 ```
 'emacs-mode':
   'hideTabs': false           # hide tabs
-  'hideSidebar': false        # hide tree view 
+  'hideSidebar': false        # hide tree view
   'useEmacsCursor': true      # use emacs style(fat) cursor
 ```
