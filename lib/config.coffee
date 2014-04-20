@@ -9,11 +9,11 @@ watch = (configName) ->
   atom.config.observe configName, ->
     callback?(atom.config.get(configName) ? defaultValue)
 
-watch 'emacs.hideTabs', false, (value) ->
+watch 'emacs-mode.hideTabs', false, (value) ->
   atom.workspaceView.trigger 'emacs:hide-tabs', value
 
-watch 'emacs.hideSidebar', false, (value) ->
+watch 'emacs-mode.hideSidebar', false, (value) ->
   atom.workspaceView.trigger 'emacs:hide-sidebar', value
 
-watch 'emacs.useEmacsCursor', true, (value) ->
+watch 'emacs-mode.useEmacsCursor', true, (value) ->
   atom.workspaceView.trigger 'emacs:use-emacs-cursor', value

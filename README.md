@@ -71,7 +71,7 @@ atom.packages.enablePackage('emacs-mode').activateNow()
 Below are the default configurations:
 
 ```
-'emacs':
+'emacs-mode':
   'hideTabs': false           # hide tabs
   'hideSidebar': false        # hide tree view 
   'useEmacsCursor': true      # use emacs style(fat) cursor
