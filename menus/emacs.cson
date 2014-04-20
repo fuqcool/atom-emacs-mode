@@ -1,15 +1,15 @@
 # See https://atom.io/docs/latest/creating-a-package#menus for more details
 'context-menu':
   '.overlayer':
-      'Enable emacs': 'emacs:toggle'
+      'Enable emacs-mode': 'emacs-mode:toggle'
 
 'menu': [
   {
     'label': 'Packages'
     'submenu': [
-      'label': 'Emacs'
+      'label': 'emacs-mode'
       'submenu': [
-        { 'label': 'Toggle', 'command': 'emacs:toggle' }
+        { 'label': 'Toggle', 'command': 'emacs-mode:toggle' }
       ]
     ]
   }

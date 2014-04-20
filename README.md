@@ -8,7 +8,7 @@ This is an Emacs extension for Atom.
 You can install it from `Atom -> Preferences -> Settings -> Packages`. To enable emacs-mode automatically on Atom starts, put following code to your init script:
 
 ```
-atom.packages.enablePackage('emacs').activateNow()
+atom.packages.enablePackage('emacs-mode').activateNow()
 ```
 
 ## Features
