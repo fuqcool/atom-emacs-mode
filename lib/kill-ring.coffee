@@ -1,70 +1,41 @@
-{Range} = require 'atom'
-
-STATUS_IDLE = 0
-STATUS_READY = 1
-STATUS_YANK = 2
+_ = require 'underscore-plus'
 
 module.exports =
   class KillRing
     constructor: ->
-      @ring = []
-      @status = STATUS_IDLE
-      @yankBeg = null
-
-    _push: (text) ->
-      @ring.push(text)
-
-    _pop: ->
-      if @ring.length
-        @ring.unshift @ring.pop()
-        @ring[@ring.length - 1]
+      @items = []
+      @yanking = false
+      @capacity = 1000
+      @emptyItem =
+        text: ''
+        meta: null
 
     _top: ->
-      if @ring.length
-        @ring[@ring.length - 1]
+      _.last @items
 
-    _bottom: ->
-      if @ring.length
-        @ring[0]
+    _shift: ->
+      @items.unshift @items.pop()
 
-    _saveClipboard: ->
-      text = atom.clipboard.read()
-      if text != @_top()
-        @_push(text)
+    put: (text, meta) ->
+      @items.push(text: text, meta: meta)
 
-    cancelYank: ->
-      if @status is STATUS_YANK
-        @status = STATUS_IDLE
-      else if @status is STATUS_READY
-        @status = STATUS_YANK
+    yank: ->
+      if @items.length
+        @yanking = true
+        @_top()
+      else
+        @emptyItem
 
-    yank: (editorView) ->
-      @_saveClipboard()
-      if @ring.length
-        editor = editorView.getEditor()
-        @yankBeg = editor.getCursorBufferPosition()
-        @status = STATUS_READY
-        editor.insertText(@_top())
+    yankPop: ->
+      if @yanking
+        @_shift()
+        @_top()
+      else
+        throw new Error("Previous command is not yank.")
 
-    yankPop: (editorView) ->
-      if @status is STATUS_YANK
-        editor = editorView.getEditor()
-        text = @_pop()
-        if text.length != @_bottom().length
-          @status = STATUS_READY
-        currentPos = editor.getCursorBufferPosition()
-        editor.setTextInBufferRange(new Range(@yankBeg, currentPos), text)
+    yankText: -> @yank().text
 
-    killRingSave: (editorView) ->
-      @_saveClipboard()
-      editor = editorView.getEditor()
-      editor.copySelectedText()
-      text = atom.clipboard.read()
-      @_push(text)
+    yankPopText: -> @yankPop().text
 
-    killRegion: (editorView) ->
-      @_saveClipboard()
-      editor = editorView.getEditor()
-      editor.cutSelectedText()
-      text = atom.clipboard.read()
-      @_push(text)
+    cancel: ->
+      @yanking = false if @yanking

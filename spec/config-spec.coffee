@@ -1,41 +1,28 @@
-configUtil = require '../lib/config-util'
+{WorkspaceView} = require 'atom'
 
 describe 'config', ->
-  watchHandler = null
-  keyPath = 'emacs-mode:foo'
-
-  getConfig = -> atom.config.get keyPath
-  setConfig = (value) -> atom.config.set keyPath, value
+  hideTabs = jasmine.createSpy 'hideTabs'
+  hideSidebar = jasmine.createSpy 'hideSidebar'
+  useEmacsCursor = jasmine.createSpy 'useEmacsCursor'
 
   beforeEach ->
-    setConfig null
-    watchHandler = jasmine.createSpy 'watchHandler'
+    atom.config.set 'emacs-mode.hideTabs', undefined
+    atom.config.set 'emacs-mode.hideSidebar', undefined
+    atom.config.set 'emacs-mode.useEmacsCursor', undefined
 
-  it 'should write default value if key does not exists', ->
-    configUtil.watch keyPath, false, watchHandler
+    atom.workspaceView = new WorkspaceView
+    atom.workspaceView.on 'emacs:hide-tabs', hideTabs
+    atom.workspaceView.on 'emacs:hide-sidebar', hideSidebar
+    atom.workspaceView.on 'emacs:use-emacs-cursor', useEmacsCursor
 
-    expect(getConfig()).toBe(false)
-    expect(watchHandler).toHaveBeenCalledWith(false)
+    require '../lib/config'
 
-  it 'should not write default value if key exists', ->
-    setConfig false
-    configUtil.watch keyPath, true, watchHandler
+  it 'should ensure config exists', ->
+    expect(atom.config.get('emacs-mode.hideTabs')).toBe(false)
+    expect(atom.config.get('emacs-mode.hideSidebar')).toBeDefined(false)
+    expect(atom.config.get('emacs-mode.useEmacsCursor')).toBeDefined(true)
 
-    expect(watchHandler).toHaveBeenCalledWith(false)
-    expect(getConfig()).toBe(false)
-
-  it 'should work with only two arguments', ->
-    configUtil.watch keyPath, watchHandler
-    setConfig true
-
-    expect(watchHandler).toHaveBeenCalledWith(true)
-
-  it 'should call handler with null if no config exists', ->
-    configUtil.watch keyPath, watchHandler
-
-    expect(watchHandler).toHaveBeenCalledWith(null)
-
-  it 'should not throw error if there is only one argument', ->
-    expect(->
-      configUtil.watch keyPath
-    ).not.toThrow()
+  it 'should trigger corresponding events', ->
+    expect(hideTabs).toHaveBeenCalled()
+    expect(hideSidebar).toHaveBeenCalled()
+    expect(useEmacsCursor).toHaveBeenCalled()

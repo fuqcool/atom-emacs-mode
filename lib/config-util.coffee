@@ -1,5 +1,4 @@
 watch = (key) ->
-  console.log arguments
   return if not key?
 
   if arguments.length is 2

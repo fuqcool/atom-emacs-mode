@@ -1,13 +1,10 @@
 {Range, Point} = require 'atom'
 SwitchBufferView = require './switch-buffer-view'
 FindFileView = require './find-file-view.coffee'
-KillRing = require './kill-ring'
 EmacsMark = require './mark'
 
 
 module.exports =
-  killRing: new KillRing()
-
   activate: (state) ->
     atom.workspaceView.command 'emacs:find-file', => @findFile()
     atom.workspaceView.command 'emacs:hide-tabs', (event, value) => @hideTabs(value)
@@ -15,16 +12,13 @@ module.exports =
     atom.workspaceView.command 'emacs:use-emacs-cursor', (event, value) => @useEmacsCursor(value)
 
     require './config'
+    require './init-kill-ring'
 
     atom.workspaceView.eachEditorView (editorView) =>
       new EmacsMark(editorView)
 
       editorView.command 'emacs:switch-buffer', => @switchBuffer()
-      editorView.command 'emacs:yank', => @yank(editorView)
-      editorView.on 'cursor:moved', => @killRing.cancelYank()
-      editorView.command 'emacs:yank-pop', => @yankPop(editorView)
-      editorView.command 'emacs:kill-region', => @killRegion(editorView)
-      editorView.command 'emacs:kill-ring-save', => @killRingSave(editorView)
+
       editorView.command 'emacs:open-line', => @openLine(editorView)
       editorView.command 'emacs:forward-word', => @forwardWord(editorView)
       editorView.command 'emacs:backward-word', => @backwardWord(editorView)
@@ -32,8 +26,6 @@ module.exports =
       editorView.command 'emacs:clear-selection', => @clearSelection(editorView)
 
       editorView.on 'core:cancel', => editorView.trigger('emacs:clear-selection')
-      editorView.on 'mouseup', => @selectByMouse(editorView)
-
 
   deactivate: ->
 
@@ -45,21 +37,6 @@ module.exports =
   findFile: ->
     new FindFileView()
 
-  yank: (editorView) ->
-    @killRing.yank(editorView)
-
-  yankPop: (editorView) ->
-    @killRing.yankPop(editorView)
-
-  killRegion: (editorView) ->
-    editor = editorView.getEditor()
-    @killRing.killRegion(editorView)
-
-  killRingSave: (editorView) ->
-    @killRing.killRingSave(editorView)
-    @clearSelection(editorView)
-    editorView.trigger 'emacs:clear-mark'
-
   openLine: (editorView) ->
     editor = editorView.getEditor()
     pos = editor.getCursorBufferPosition()
@@ -69,9 +46,6 @@ module.exports =
   clearSelection: (editorView) ->
     editor = editorView.getEditor()
     sel.clear() for sel in editor.getSelections()
-
-  selectByMouse: (editorView) ->
-    @killRing.killRingSave(editorView)
 
   _getChar: (editor, row, col) ->
     editor.getTextInBufferRange(
