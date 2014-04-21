@@ -6,30 +6,40 @@ module.exports =
       @items = []
       @yanking = false
       @capacity = 1000
+      @currentItemIndex = -1
       @emptyItem =
         text: ''
         meta: null
 
-    _top: ->
-      _.last @items
+    _getCurrentItem: ->
+      if @currentItemIndex >= 0
+        @items[@currentItemIndex]
+      else
+        @emptyItem
 
-    _shift: ->
-      @items.unshift @items.pop()
+    _gotoNextItem: ->
+      return if @currentItemIndex is -1
+
+      if @currentItemIndex is 0
+        @currentItemIndex = @items.length - 1
+      else
+        @currentItemIndex--
 
     put: (text, meta) ->
       @items.push(text: text, meta: meta)
+      @currentItemIndex = @items.length - 1
 
     yank: ->
       if @items.length
         @yanking = true
-        @_top()
+        @_getCurrentItem()
       else
         @emptyItem
 
     yankPop: ->
       if @yanking
-        @_shift()
-        @_top()
+        @_gotoNextItem()
+        @_getCurrentItem()
       else
         throw new Error("Previous command is not yank.")
 

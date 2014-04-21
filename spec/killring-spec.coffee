@@ -30,7 +30,7 @@ describe 'kill ring', ->
 
       expect(-> killRing.yankPop()).toThrow()
 
-    it 'should paste the second latest item', ->
+    it 'should go through the kill ring over again', ->
       killRing.put 'foo'
       killRing.put 'bar'
       killRing.yank()
@@ -70,6 +70,21 @@ describe 'kill ring', ->
       killRing.cancel()
 
       expect(-> killRing.yankPop()).toThrow()
+
+    it 'should reset index to top when putting new item', ->
+      killRing.put 'foo'
+      killRing.put 'bar'
+
+      killRing.yank()
+      killRing.yankPop()
+
+      killRing.put 'bla'
+
+      item = killRing.yank()
+      expect(item.text).toBe 'bla'
+
+      item = killRing.yankPop()
+      expect(item.text).toBe 'bar'
 
   describe 'meta', ->
     it 'should store meta info together with text', ->
