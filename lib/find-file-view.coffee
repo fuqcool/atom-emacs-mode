@@ -23,6 +23,7 @@ module.exports =
       @filterEditorView.setText(@pwd)
       atom.workspaceView.appendToBottom(this)
       @focusFilterEditor()
+      @disableTab()
 
     viewForItem: (item) ->
       """
@@ -73,3 +74,9 @@ module.exports =
         return f + '/'
       else
         return f
+
+    disableTab: ->
+      @filterEditorView.on 'keydown', (evt) ->
+        if evt.which is 9
+          evt.stopPropagation()
+          evt.preventDefault()
