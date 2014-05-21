@@ -71,7 +71,7 @@ atom.packages.enablePackage('emacs-mode').activateNow()
   'ctrl-/': 'core:undo'
   'ctrl-x ctrl-s': 'core:save'
 
-  #selection
+  # selection
   'ctrl-x h': 'core:select-all'
 
   # buffer
