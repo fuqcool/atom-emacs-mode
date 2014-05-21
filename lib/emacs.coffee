@@ -5,11 +5,14 @@ EmacsMark = require './mark'
 
 
 module.exports =
+  useFuzzyFileFinder: null,
+
   activate: (state) ->
     atom.workspaceView.command 'emacs:find-file', => @findFile()
-    atom.workspaceView.command 'emacs:hide-tabs', (event, value) => @hideTabs(value)
-    atom.workspaceView.command 'emacs:hide-sidebar', (event, value) => @hideSidebar(value)
-    atom.workspaceView.command 'emacs:use-emacs-cursor', (event, value) => @useEmacsCursor(value)
+    atom.workspaceView.command 'emacs:hide-tabs', (event, value) => @hideTabs value
+    atom.workspaceView.command 'emacs:hide-sidebar', (event, value) => @hideSidebar value
+    atom.workspaceView.command 'emacs:use-emacs-cursor', (event, value) => @useEmacsCursor value
+    atom.workspaceView.command 'emacs:use-fuzzy-file-finder', (event, value) => @useFuzzyFileFinder = value
 
     require './config'
     require './init-kill-ring'
@@ -35,7 +38,10 @@ module.exports =
     new SwitchBufferView()
 
   findFile: ->
-    new FindFileView()
+    if @useFuzzyFileFinder
+      atom.workspaceView.trigger 'fuzzy-finder:toggle-file-finder'
+    else
+      new FindFileView()
 
   openLine: (editorView) ->
     editor = editorView.getEditor()

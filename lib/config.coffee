@@ -8,3 +8,6 @@ config.watch 'emacs-mode.hideSidebar', false, (value) ->
 
 config.watch 'emacs-mode.useEmacsCursor', true, (value) ->
   atom.workspaceView.trigger 'emacs:use-emacs-cursor', value
+
+config.watch 'emacs-mode.useFuzzyFileFinder', false, (value) ->
+  atom.workspaceView.trigger 'emacs:use-fuzzy-file-finder', value
