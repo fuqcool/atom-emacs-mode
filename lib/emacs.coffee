@@ -3,16 +3,14 @@ SwitchBufferView = require './switch-buffer-view'
 FindFileView = require './find-file-view.coffee'
 EmacsMark = require './mark'
 
-
 module.exports =
-  useFuzzyFileFinder: null,
-
   activate: (state) ->
     atom.workspaceView.command 'emacs:find-file', => @findFile()
     atom.workspaceView.command 'emacs:hide-tabs', (event, value) => @hideTabs value
     atom.workspaceView.command 'emacs:hide-sidebar', (event, value) => @hideSidebar value
     atom.workspaceView.command 'emacs:use-emacs-cursor', (event, value) => @useEmacsCursor value
     atom.workspaceView.command 'emacs:use-fuzzy-file-finder', (event, value) => @useFuzzyFileFinder = value
+    atom.workspaceView.command 'emacs:use-fuzzy-buffer-finder', (event, value) => @useFuzzyBufferFinder = value
 
     require './config'
     require './init-kill-ring'
@@ -22,11 +20,11 @@ module.exports =
 
       editorView.command 'emacs:switch-buffer', => @switchBuffer()
 
-      editorView.command 'emacs:open-line', => @openLine(editorView)
-      editorView.command 'emacs:forward-word', => @forwardWord(editorView)
-      editorView.command 'emacs:backward-word', => @backwardWord(editorView)
-      editorView.command 'emacs:recenter', => @recenter(editorView)
-      editorView.command 'emacs:clear-selection', => @clearSelection(editorView)
+      editorView.command 'emacs:open-line', => @openLine editorView
+      editorView.command 'emacs:forward-word', => @forwardWord editorView
+      editorView.command 'emacs:backward-word', => @backwardWord editorView
+      editorView.command 'emacs:recenter', => @recenter editorView
+      editorView.command 'emacs:clear-selection', => @clearSelection editorView
 
       editorView.on 'core:cancel', => editorView.trigger('emacs:clear-selection')
 
@@ -35,7 +33,10 @@ module.exports =
   serialize: ->
 
   switchBuffer: ->
-    new SwitchBufferView()
+    if @useFuzzyBufferFinder
+      atom.workspaceView.trigger 'fuzzy-finder:toggle-buffer-finder'
+    else
+      new SwitchBufferView()
 
   findFile: ->
     if @useFuzzyFileFinder
