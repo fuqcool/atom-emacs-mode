@@ -1,4 +1,4 @@
-KillRing = require '../lib/kill-ring'
+KillRing = require '../lib/kill-ring-model'
 
 describe 'kill ring', ->
   killRing = null
