@@ -87,7 +87,9 @@ Below are the default configurations:
 
 ```
 'emacs-mode':
-  'hideTabs': false           # hide tabs
-  'hideSidebar': false        # hide tree view
-  'useEmacsCursor': true      # use emacs style(fat) cursor
+  'hideTabs': false              # hide tabs
+  'hideSidebar': false           # hide tree view
+  'useEmacsCursor': true         # use emacs style(fat) cursor
+  'useFuzzyBufferFinder': false  # use default buffer finder
+  'useFuzzyFileFinder': false    # use default file finder
 ```
