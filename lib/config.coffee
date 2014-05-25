@@ -11,3 +11,6 @@ config.watch 'emacs-mode.useEmacsCursor', true, (value) ->
 
 config.watch 'emacs-mode.useFuzzyFileFinder', false, (value) ->
   atom.workspaceView.trigger 'emacs:use-fuzzy-file-finder', value
+
+config.watch 'emacs-mode.useFuzzyBufferFinder', false, (value) ->
+  atom.workspaceView.trigger 'emacs:use-fuzzy-buffer-finder', value

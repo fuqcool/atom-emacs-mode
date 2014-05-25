@@ -6,7 +6,7 @@ module.exports =
   class FileFinderView extends SelectListView
     initialize: ->
       super
-      @addClass('overlay from-top')
+      @addClass 'overlay from-top'
 
       editor = atom.workspace.getActiveEditor()
       if editor
@@ -16,13 +16,17 @@ module.exports =
       @pwd ?= process.env.HOME
       @pwd = @appendSlash @pwd
 
+      # re-render list whenever buffer is changed
       @subscribe @filterEditorView.getEditor().getBuffer(), 'changed', =>
         @setItems @renderItems()
         @populateList()
 
-      @filterEditorView.setText(@pwd)
-      atom.workspaceView.appendToBottom(this)
+      # use current directory as default
+      @filterEditorView.setText @pwd
+      atom.workspaceView.appendToBottom this
+
       @focusFilterEditor()
+      @disableTab()
 
     viewForItem: (item) ->
       """
@@ -30,11 +34,17 @@ module.exports =
       """
 
     listDir: (dir) ->
+      result = []
+
       try
-        files = (path.join dir, f for f in fs.readdirSync dir)
-        (uri: f, name: f for f in files)
+        files = fs.readdirSync dir
+
+        for f in files
+          result.push(uri: path.join(dir, f), name: f)
       catch
-        []
+        console.warn "Unable to read directory #{dir}"
+
+      result
 
     renderItems: () ->
       dir = @filterEditorView.getText()
@@ -51,7 +61,7 @@ module.exports =
       catch
         files.push(uri: dir, name: "Create #{dir}")
       finally
-        parent = path.dirname(dir)
+        parent = path.dirname dir
         files = files.concat @listDir(parent)
 
       files
@@ -73,3 +83,9 @@ module.exports =
         return f + '/'
       else
         return f
+
+    disableTab: ->
+      @filterEditorView.on 'keydown', (evt) ->
+        if evt.which is 9
+          evt.stopPropagation()
+          evt.preventDefault()
