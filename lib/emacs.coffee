@@ -2,6 +2,7 @@
 SwitchBufferView = require './switch-buffer-view'
 FindFileView = require './find-file-view.coffee'
 EmacsMark = require './mark'
+killRing = require './kill-ring'
 
 module.exports =
   activate: (state) ->
@@ -13,13 +14,11 @@ module.exports =
     atom.workspaceView.command 'emacs:use-fuzzy-buffer-finder', (event, value) => @useFuzzyBufferFinder = value
 
     require './config'
-    require './init-kill-ring'
 
     atom.workspaceView.eachEditorView (editorView) =>
       new EmacsMark(editorView)
 
       editorView.command 'emacs:switch-buffer', => @switchBuffer()
-
       editorView.command 'emacs:open-line', => @openLine editorView
       editorView.command 'emacs:forward-word', => @forwardWord editorView
       editorView.command 'emacs:backward-word', => @backwardWord editorView
@@ -27,6 +26,11 @@ module.exports =
       editorView.command 'emacs:clear-selection', => @clearSelection editorView
 
       editorView.on 'core:cancel', => editorView.trigger 'emacs:clear-selection'
+
+      @enableKillRing editorView
+
+    atom.workspaceView.on 'editor:attached', (evt) =>
+      @enableKillRing evt.targetView()
 
   deactivate: ->
 
@@ -104,3 +108,22 @@ module.exports =
 
     pix = editorView.pixelPositionForScreenPosition topPos
     editorView.scrollTop pix.top
+
+  enableKillRing: (editorView) ->
+    return if editorView.hasClass 'kill-ring'
+
+    editorView.command 'emacs:yank', -> killRing.yank editorView
+    editorView.command 'emacs:yank-pop', -> killRing.yankPop editorView
+    editorView.command 'emacs:kill-region', -> killRing.killRegion editorView
+    editorView.command 'emacs:kill-ring-save', ->
+      killRing.killRingSave editorView
+      editorView.trigger 'emacs:clear-selection'
+
+    editorView.command 'emacs:cancel-yank', ->
+      killRing.cancelYank()
+
+    editorView.on 'mouseup', -> killRing.killRingSave editorView
+    editorView.on 'core:cancel', ->
+      editorView.trigger 'emacs:cancel-yank'
+
+    editorView.addClass 'kill-ring'

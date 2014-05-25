@@ -1,51 +1,80 @@
-_ = require 'underscore-plus'
+KillRingModel = require './kill-ring-model'
+{Range} = require 'atom'
 
 module.exports =
-  class KillRing
-    constructor: ->
-      @items = []
-      @yanking = false
-      @capacity = 1000
-      @currentItemIndex = -1
-      @emptyItem =
-        text: ''
-        meta: null
+  model: new KillRingModel,
 
-    _getCurrentItem: ->
-      if @currentItemIndex >= 0
-        @items[@currentItemIndex]
-      else
-        @emptyItem
+  enableKillRing: (editorView) ->
+    return if editorView.hasClass 'kill-ring'
 
-    _gotoNextItem: ->
-      return if @currentItemIndex is -1
+    editorView.command 'emacs:yank', => @yank editorView
+    editorView.command 'emacs:yank-pop', => @yankPop editorView
+    editorView.command 'emacs:kill-region', => @killRegion editorView
+    editorView.command 'emacs:kill-ring-save', =>
+      @killRingSave editorView
+      editorView.trigger 'emacs:clear-selection'
 
-      if @currentItemIndex is 0
-        @currentItemIndex = @items.length - 1
-      else
-        @currentItemIndex--
+    editorView.command 'emacs:cancel-yank', =>
+      @cancelYank()
 
-    put: (text, meta) ->
-      @items.push(text: text, meta: meta)
-      @currentItemIndex = @items.length - 1
+    editorView.on 'mouseup', => @killRingSave editorView
+    editorView.on 'core:cancel', ->
+      editorView.trigger 'emacs:cancel-yank'
 
-    yank: ->
-      if @items.length
-        @yanking = true
-        @_getCurrentItem()
-      else
-        @emptyItem
+    editorView.addClass 'kill-ring'
 
-    yankPop: ->
-      if @yanking
-        @_gotoNextItem()
-        @_getCurrentItem()
-      else
-        throw new Error("Previous command is not yank.")
 
-    yankText: -> @yank().text
+  yank: (editorView) ->
+    @_saveClipboard()
 
-    yankPopText: -> @yankPop().text
+    @_excludeCursor editorView, =>
+      editor = editorView.getEditor()
+      @yankBeg = editor.getCursorBufferPosition()
+      editor.insertText @model.yankText()
 
-    cancel: ->
-      @yanking = false if @yanking
+  yankPop: (editorView) ->
+    @_excludeCursor editorView, =>
+      if @model.yanking
+        editor = editorView.getEditor()
+        text = @model.yankPopText()
+        currentPos = editor.getCursorBufferPosition()
+        editor.setTextInBufferRange(new Range(@yankBeg, currentPos), text)
+
+  killRingSave: (editorView) ->
+    @_saveClipboard()
+
+    editor = editorView.getEditor()
+    editor.copySelectedText()
+    text = atom.clipboard.read()
+
+    @model.put text
+    editorView.trigger 'emacs:clear-mark'
+
+  killRegion: (editorView) ->
+    @_saveClipboard()
+
+    editor = editorView.getEditor()
+    editor.cutSelectedText()
+    text = atom.clipboard.read()
+
+    @model.put text
+
+  cancelYank: ->
+    @model.cancel()
+
+  # need a better way to disable cursor while callback is executing
+  _excludeCursor: (editorView, callback) ->
+    editorView.off 'cursor:moved'
+
+    callback.call @
+
+    setTimeout =>
+      editorView.on 'cursor:moved', => @cancelYank()
+
+  _saveClipboard: ->
+    text = atom.clipboard.read()
+
+    return if text is 'initial clipboard content'
+
+    if text isnt @model.yankText()
+      @model.put text
