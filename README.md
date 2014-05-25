@@ -1,4 +1,4 @@
-Atom emacs-mode
+Atom emacs-mode [![Build Status](https://travis-ci.org/fuqcool/atom-emacs-mode.svg?branch=master)](https://travis-ci.org/fuqcool/atom-emacs-mode)
 ======
 
 This is an Emacs extension for Atom.
