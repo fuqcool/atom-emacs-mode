@@ -3,10 +3,9 @@ _ = require 'underscore-plus'
 module.exports =
   class KillRing
     constructor: ->
-      @items = []
-      @yanking = false
+      @reset()
+
       @capacity = 1000
-      @currentItemIndex = -1
       @emptyItem =
         text: ''
         meta: null
@@ -24,6 +23,11 @@ module.exports =
         @currentItemIndex = @items.length - 1
       else
         @currentItemIndex--
+
+    reset: ->
+      @items = []
+      @yanking = false
+      @currentItemIndex = -1
 
     put: (text, meta) ->
       @items.push(text: text, meta: meta)

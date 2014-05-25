@@ -4,7 +4,29 @@ KillRingModel = require './kill-ring-model'
 module.exports =
   model: new KillRingModel,
 
+  enableKillRing: (editorView) ->
+    return if editorView.hasClass 'kill-ring'
+
+    editorView.command 'emacs:yank', => @yank editorView
+    editorView.command 'emacs:yank-pop', => @yankPop editorView
+    editorView.command 'emacs:kill-region', => @killRegion editorView
+    editorView.command 'emacs:kill-ring-save', =>
+      @killRingSave editorView
+      editorView.trigger 'emacs:clear-selection'
+
+    editorView.command 'emacs:cancel-yank', =>
+      @cancelYank()
+
+    editorView.on 'mouseup', => @killRingSave editorView
+    editorView.on 'core:cancel', ->
+      editorView.trigger 'emacs:cancel-yank'
+
+    editorView.addClass 'kill-ring'
+
+
   yank: (editorView) ->
+    @_saveClipboard()
+
     @_excludeCursor editorView, =>
       editor = editorView.getEditor()
       @yankBeg = editor.getCursorBufferPosition()
@@ -51,5 +73,8 @@ module.exports =
 
   _saveClipboard: ->
     text = atom.clipboard.read()
+
+    return if text is 'initial clipboard content'
+
     if text isnt @model.yankText()
       @model.put text

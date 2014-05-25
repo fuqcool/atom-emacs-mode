@@ -1,6 +1,6 @@
 KillRing = require '../lib/kill-ring-model'
 
-describe 'kill ring', ->
+describe 'kill ring model', ->
   killRing = null
 
   beforeEach ->
@@ -86,10 +86,17 @@ describe 'kill ring', ->
       item = killRing.yankPop()
       expect(item.text).toBe 'bar'
 
-  describe 'meta', ->
-    it 'should store meta info together with text', ->
-      killRing.put 'foo', {start: 100}
+  it 'should store meta info together with text', ->
+    killRing.put 'foo', {start: 100}
+    item = killRing.yank()
 
-      item = killRing.yank()
+    expect(item.meta.start).toBe 100
 
-      expect(item.meta.start).toBe 100
+  it 'reset kill ring', ->
+    killRing.put 'foo'
+    killRing.yank()
+
+    killRing.reset()
+    expect(killRing.items.length).toBe 0
+    expect(killRing.yanking).toBe false
+    expect(killRing.currentItemIndex).toBe -1
