@@ -8,13 +8,14 @@ module.exports =
       super
       @addClass 'overlay from-top'
 
+      pwd = path.join '~', path.sep
       editor = atom.workspace.getActiveEditor()
+
       if editor
         uri = path.dirname editor.getUri()
-        @pwd = uri if uri? and uri isnt '.'
+        pwd = uri if uri? and uri isnt '.'
 
-      @pwd ?= process.env.HOME
-      @pwd = @appendSlash @pwd
+      pwd = @ensureTailSep pwd
 
       # re-render list whenever buffer is changed
       @subscribe @filterEditorView.getEditor().getBuffer(), 'changed', =>
@@ -22,67 +23,87 @@ module.exports =
         @populateList()
 
       # use current directory as default
-      @filterEditorView.setText @pwd
+      @filterEditorView.setText pwd
       atom.workspaceView.appendToBottom this
 
       @focusFilterEditor()
       @disableTab()
 
     viewForItem: (item) ->
+      try
+        uri = @resolveHome item.uri
+        stat = fs.statSync uri
+
+        if stat.isFile()
+          iconClass = 'icon-file-text'
+        else if stat.isDirectory()
+          iconClass = 'icon-file-directory'
+      catch
+        iconClass = 'icon-file-text'
+
       """
-      <li>#{item.name}</li>
+      <li><span class="icon #{iconClass}">#{item.name}</span></li>
       """
 
     listDir: (dir) ->
       result = []
 
       try
-        files = fs.readdirSync dir
+        files = fs.readdirSync @resolveHome(dir)
 
         for f in files
           result.push(uri: path.join(dir, f), name: f)
-      catch
-        console.warn "Unable to read directory #{dir}"
+      catch e
+        console.warn "Unable to read directory #{dir}, #{e.message}"
 
       result
 
     renderItems: () ->
-      dir = @filterEditorView.getText()
-      return [] if dir is ''
+      filePath = @filterEditorView.getText().trim()
+      return [] if filePath is ''
 
       files = []
 
-      try
-        stats = fs.statSync dir
+      if @endWithSep filePath
+        files = files.concat @listDir(filePath)
+      else
+        parentPath = @getParentPath filePath
+        files = files.concat @listDir(parentPath)
 
-        if stats.isDirectory()
-          files = files.concat @listDir(dir)
-          files.unshift(name: "Open #{dir} in new window", uri: dir, open: true)
-      catch
-        files.push(uri: dir, name: "Create #{dir}")
-      finally
-        parent = path.dirname dir
-        files = files.concat @listDir(parent)
-
+      console.log files
       files
+
+    getParentPath: (filePath) ->
+      if filePath is '~'
+        filePath = process.env.HOME
+
+      path.dirname filePath
 
     getFilterKey: -> 'uri'
 
+    resolveHome: (filePath) ->
+      if filePath[0] is '~'
+        process.env.HOME + filePath.substring(1)
+      else
+        filePath
+
     confirmed: (item) ->
-      fs.stat item.uri, (err, stats) =>
+      filePath = @resolveHome item.uri
+
+      fs.stat filePath, (err, stats) =>
         if err? or stats.isFile()
-          atom.workspace.open(item.uri)
+          atom.workspace.open filePath
         else if stats.isDirectory()
           if item.open? and item.open
-            atom.open(pathsToOpen: [item.uri])
+            atom.open(pathsToOpen: [filePath])
           else
-            @filterEditorView.setText(@appendSlash item.uri)
+            @filterEditorView.getEditor().setText(@ensureTailSep item.uri)
 
-    appendSlash: (f) ->
-      if f and f[f.length - 1] isnt '/'
-        return f + '/'
-      else
-        return f
+    endWithSep: (filePath) ->
+      filePath[filePath.length - 1] is path.sep
+
+    ensureTailSep: (f) ->
+      if @endWithSep f then f else f + path.sep
 
     disableTab: ->
       @filterEditorView.on 'keydown', (evt) ->
