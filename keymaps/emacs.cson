@@ -14,14 +14,16 @@
   'alt-g g': 'go-to-line:toggle'
 
 '.editor.emacs-marking':
-  'right':'core:select-right'
-  'ctrl-f':'core:select-right'
-  'left':'core:select-left'
-  'ctrl-b':'core:select-left'
-  'up':'core:select-up'
-  'ctrl-p':'core:select-up'
-  'down':'core:select-down'
-  'ctrl-n':'core:select-down'
+  'right': 'core:select-right'
+  'ctrl-f': 'core:select-right'
+  'left': 'core:select-left'
+  'ctrl-b': 'core:select-left'
+  'up': 'core:select-up'
+  'ctrl-p': 'core:select-up'
+  'down': 'core:select-down'
+  'ctrl-n': 'core:select-down'
+  'ctrl-e': 'editor:select-to-end-of-line'
+  'ctrl-a': 'editor:select-to-beginning-of-line'
 
 'div.editor':
   'ctrl-space': 'emacs:set-mark'
