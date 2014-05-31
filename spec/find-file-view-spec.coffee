@@ -6,84 +6,65 @@ FileFinderView = require '../lib/find-file-view'
 
 describe 'file finder view', ->
   fileFinderView = null
+  # filterEditor = null
+
+  activeUri = (uri) ->
+    atom.workspace = {
+      getActiveEditor: -> {getUri: -> uri}
+    }
 
   beforeEach ->
     path.sep = '/'
     process.env.HOME = '/home/me'
 
     atom.workspaceView = new WorkspaceView
-    fileFinderView = new FileFinderView
 
     spyOn(fs, 'readdirSync').andCallFake (dir) ->
         if dir in ['/home/me', '/home/me/']
           ['foo', 'bar']
         else if dir in ['/home', '/home/']
-          ['a', 'b', 'c']
+          ['a', 'b', 'me']
+
+    activeUri ''
+    fileFinderView = new FileFinderView
+
+  describe 'init', ->
+    it 'uses current file directory as initial directory', ->
+      activeUri '/home/a'
+
+      fileFinderView = new FileFinderView
+
+      expect(fileFinderView.filterEditorView.getText()).toBe '/home/'
+
+    it 'uses HOME as initial directory', ->
+      fileFinderView = new FileFinderView
+
+      expect(fileFinderView.items.length).toBe 2
+      expect(fileFinderView.filterEditorView.getText()).toBe '~/'
 
 
-  describe 'listDir', ->
-    it 'list files in directory', ->
-      files = fileFinderView.listDir '/home/me'
+  it 'renders files in directory', ->
+    fileFinderView.filterEditorView.setText '/home/me/'
 
-      expect(files).toEqual([
-        {uri: '/home/me/foo', name: 'foo'}
-        {uri: '/home/me/bar', name: 'bar'}
-      ])
+    expect(fileFinderView.items).toEqual([
+      {uri: '/home/me/foo', name: 'foo'}
+      {uri: '/home/me/bar', name: 'bar'}
+    ])
 
-    it 'list files in home', ->
-      files = fileFinderView.listDir '~'
+    expect(fileFinderView.list.find('li').length).toBe 2
 
-      expect(files).toEqual([
-        {uri: '~/foo', name: 'foo'}
-        {uri: '~/bar', name: 'bar'}
-      ])
+  it 'renders files in parent directory', ->
+    fileFinderView.filterEditorView.setText '/home/me'
 
-  describe 'renderItems', ->
-    it 'render directory with tail separator', ->
-      spyOn(fileFinderView.filterEditorView, 'getText').andReturn '/home/me/'
+    expect(fileFinderView.items).toEqual([
+      {uri: '/home/a', name: 'a'}
+      {uri: '/home/b', name: 'b'}
+      {uri: '/home/me', name: 'me'}
+    ])
 
-      items = fileFinderView.renderItems()
+    expect(fileFinderView.list.find('li').length).toBe 1
 
-      expect(items).toEqual([
-        {uri: '/home/me/foo', name: 'foo'}
-        {uri: '/home/me/bar', name: 'bar'}
-      ])
+  it 'renders files when file name is partial complete', ->
+    fileFinderView.filterEditorView.setText '/home/e'
 
-    it 'render directory without tail separator', ->
-      spyOn(fileFinderView.filterEditorView, 'getText').andReturn '/home/me'
-
-      items = fileFinderView.renderItems()
-
-      expect(items).toEqual([
-        {uri: '/home/a', name: 'a'}
-        {uri: '/home/b', name: 'b'}
-        {uri: '/home/c', name: 'c'}
-      ])
-
-    it 'render directory with tail separator', ->
-      spyOn(fileFinderView.filterEditorView, 'getText').andReturn '~/'
-
-      items = fileFinderView.renderItems()
-
-      expect(items).toEqual([
-        {uri: '~/foo', name: 'foo'}
-        {uri: '~/bar', name: 'bar'}
-      ])
-
-    it 'renders home without tail separator', ->
-      spyOn(fileFinderView.filterEditorView, 'getText').andReturn '~'
-
-      items = fileFinderView.renderItems()
-
-      expect(items).toEqual([
-        {uri: '/home/a', name: 'a'}
-        {uri: '/home/b', name: 'b'}
-        {uri: '/home/c', name: 'c'}
-      ])
-
-    it 'returns empty array if dir is empty', ->
-      spyOn(fileFinderView.filterEditorView, 'getText').andReturn ''
-
-      items = fileFinderView.renderItems()
-
-      expect(items).toEqual []
+    expect(fileFinderView.list.find('li').length).toBe 1
