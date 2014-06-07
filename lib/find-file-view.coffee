@@ -59,7 +59,7 @@ module.exports =
 
       result
 
-    renderItems: () ->
+    renderItems: ->
       filePath = @filterEditorView.getText().trim()
       return [] if filePath is ''
 
