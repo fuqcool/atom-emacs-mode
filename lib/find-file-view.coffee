@@ -16,6 +16,7 @@ module.exports =
         pwd = uri if uri? and uri isnt '.'
 
       pwd = @ensureTailSep pwd
+      pwd = @toHome pwd
 
       # re-render list whenever buffer is changed
       @subscribe @filterEditorView.getEditor().getBuffer(), 'changed', =>
@@ -66,11 +67,21 @@ module.exports =
 
       if @endWithSep filePath
         files = files.concat @listDir(filePath)
+
+        if fs.existsSync @resolveHome(filePath)
+          files.unshift
+            name: "Open #{path.basename(filePath)} in new window"
+            uri: filePath
+            open: true
       else
         parentPath = @getParentPath filePath
         files = files.concat @listDir(parentPath)
 
-      console.log files
+        unless fs.existsSync @resolveHome(filePath)
+          files.unshift
+            name: "Create #{path.basename(filePath)}"
+            uri: filePath
+
       files
 
     getParentPath: (filePath) ->
@@ -84,6 +95,12 @@ module.exports =
     resolveHome: (filePath) ->
       if filePath[0] is '~'
         process.env.HOME + filePath.substring(1)
+      else
+        filePath
+
+    toHome: (filePath) ->
+      if filePath.indexOf(process.env.HOME) is 0
+        filePath.replace process.env.HOME, '~'
       else
         filePath
 

@@ -6,7 +6,6 @@ FileFinderView = require '../lib/find-file-view'
 
 describe 'file finder view', ->
   fileFinderView = null
-  # filterEditor = null
 
   activeUri = (uri) ->
     atom.workspace = {
@@ -42,6 +41,13 @@ describe 'file finder view', ->
       expect(fileFinderView.items.length).toBe 2
       expect(fileFinderView.filterEditorView.getText()).toBe '~/'
 
+    it 'use HOME as prefix', ->
+      activeUri '/home/me/a/b'
+
+      fileFinderView = new FileFinderView
+
+      expect(fileFinderView.filterEditorView.getText()).toBe '~/a/'
+
 
   it 'renders files in directory', ->
     fileFinderView.filterEditorView.setText '/home/me/'
@@ -57,14 +63,15 @@ describe 'file finder view', ->
     fileFinderView.filterEditorView.setText '/home/me'
 
     expect(fileFinderView.items).toEqual([
+      {uri: '/home/me', name: 'Create me'}
       {uri: '/home/a', name: 'a'}
       {uri: '/home/b', name: 'b'}
       {uri: '/home/me', name: 'me'}
     ])
 
-    expect(fileFinderView.list.find('li').length).toBe 1
+    expect(fileFinderView.list.find('li').length).toBe 2
 
   it 'renders files when file name is partial complete', ->
     fileFinderView.filterEditorView.setText '/home/e'
 
-    expect(fileFinderView.list.find('li').length).toBe 1
+    expect(fileFinderView.list.find('li').length).toBe 2
