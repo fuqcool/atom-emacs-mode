@@ -93,3 +93,6 @@ Below are the default configurations:
   'useFuzzyBufferFinder': false  # use default buffer finder
   'useFuzzyFileFinder': false    # use default file finder
 ```
+
+## Contribution
+Pull requests are very welcomed. The only requirement before sending a pull request is to pass the test cases and test your own code.
