@@ -7,7 +7,7 @@ This is an Emacs extension for Atom.
 
 You can install it from `Atom -> Preferences -> Settings -> Packages`. To enable emacs-mode automatically on Atom starts, put following code to your init script:
 
-```
+```coffeescript
 atom.packages.enablePackage('emacs-mode').activateNow()
 ```
 
@@ -23,7 +23,7 @@ atom.packages.enablePackage('emacs-mode').activateNow()
 
 ## Keymap
 
-```
+```coffeescript
 '.editor':
   'ctrl-a': 'editor:move-to-first-character-of-line'
   'ctrl-e': 'editor:move-to-end-of-line'
@@ -85,7 +85,7 @@ atom.packages.enablePackage('emacs-mode').activateNow()
 ## Configuration
 Below are the default configurations:
 
-```
+```coffeescript
 'emacs-mode':
   'hideTabs': false              # hide tabs
   'hideSidebar': false           # hide tree view
