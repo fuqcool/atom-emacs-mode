@@ -105,7 +105,7 @@ module.exports =
     rows = editor.getRowsPerPage()
 
     topRow = cursorPos.row - parseInt(rows / 2)
-    topPos = editorView.editor.clipScreenPosition [topRow, 0]
+    topPos = editor.clipScreenPosition [topRow, 0]
 
     pix = editorView.pixelPositionForScreenPosition topPos
     editorView.scrollTop pix.top
