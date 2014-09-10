@@ -100,11 +100,12 @@ module.exports =
         editorView.removeClass 'emacs-cursor'
 
   recenter: (editorView) ->
-    cursorPos = editorView.getEditor().getCursorScreenPosition()
-    rows = editorView.getPageRows()
+    editor = editorView.getEditor()
+    cursorPos = editor.getCursorScreenPosition()
+    rows = editor.getRowsPerPage()
 
     topRow = cursorPos.row - parseInt(rows / 2)
-    topPos = editorView.getEditor().clipScreenPosition [topRow, 0]
+    topPos = editorView.editor.clipScreenPosition [topRow, 0]
 
     pix = editorView.pixelPositionForScreenPosition topPos
     editorView.scrollTop pix.top
