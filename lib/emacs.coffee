@@ -61,29 +61,11 @@ module.exports =
   _getChar: (editor, row, col) ->
     editor.getTextInBufferRange(new Range(new Point(row, col), new Point(row, col + 1)))
 
-  forwardWord: (editorView) ->
-    editor = editorView.getEditor()
-    cursors = editor.getCursors()
-    for cursor in cursors
-      while true
-        before = cursor.getBufferPosition()
-        cursor.moveToEndOfWord()
-        pos = cursor.getBufferPosition()
+  forwardWord: (editorView) =>
+    editorView.trigger 'editor:move-to-end-of-word'
 
-        break if before.isEqual pos
-        break if @_getChar(editor, pos.row, pos.column - 1).match /[0-9a-zA-Z]/
-
-  backwardWord: (editorView) ->
-    editor = editorView.getEditor()
-    cursors = editor.getCursors()
-    for cursor in cursors
-      while true
-        before = cursor.getBufferPosition()
-        cursor.moveToBeginningOfWord()
-        pos = cursor.getBufferPosition()
-
-        break if before.isEqual pos
-        break if @_getChar(editor, pos.row, pos.column).match /[0-9a-zA-Z]/
+  backwardWord: (editorView) =>
+    editorView.trigger 'editor:move-to-beginning-of-word'
 
   hideTabs: (isHide) ->
     (if isHide then pane.find('.tab-bar').hide() else pane.find('.tab-bar').show()) for pane in atom.workspaceView.getPanes()
