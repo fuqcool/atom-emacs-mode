@@ -3,9 +3,6 @@
   "main": "./lib/emacs",
   "version": "0.0.28",
   "description": "Enjoy a mouse-free Emacs experience on a modern editor.",
-  "activationEvents": [
-    "emacs:toggle"
-  ],
   "repository": "https://github.com/fuqcool/atom-emacs-mode.git",
   "license": "MIT",
   "engines": {
