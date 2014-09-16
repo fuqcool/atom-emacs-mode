@@ -28,8 +28,9 @@
 'div.editor':
   'ctrl-space': 'emacs:set-mark'
 
-
 '.workspace':
+  'ctrl-x': 'unset!'    # prevent cut on linux && windows
+
   # cursor
   'ctrl-p': 'core:move-up'
   'ctrl-n': 'core:move-down'
