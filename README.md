@@ -1,3 +1,7 @@
+## Deprecated
+
+This package is no longer under maintain. **Because I realized that there is nothing in this world can replace Emacs. Happy hacking!**
+
 Atom emacs-mode [![Build Status](https://travis-ci.org/fuqcool/atom-emacs-mode.svg?branch=master)](https://travis-ci.org/fuqcool/atom-emacs-mode)
 ======
 
